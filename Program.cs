@@ -1,3 +1,6 @@
+using CQRSMediatr.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -6,6 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("NewResourcingDatabase")));
 
 if (app.Environment.IsDevelopment())
 {
