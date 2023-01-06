@@ -1,17 +1,19 @@
+using System.Reflection;
 using CQRSMediatr.Context;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
+builder.Services.AddDbContext<DbApplicationContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(typeof(DbApplicationContext).Assembly.FullName)));
 
-builder.Services.AddDbContext<ApplicationContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("NewResourcingDatabase")));
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
